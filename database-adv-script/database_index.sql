@@ -22,28 +22,28 @@ CREATE INDEX idx_rooms_created_at ON rooms(created_at);
 -- Use EXPLAIN ANALYZE to measure query performance
 
 -- 1. Total number of bookings made by each user
-EXPLAIN ANALYZE SELECT Users.id AS user_id, Users.name, COUNT(Reservations.id) AS total_bookings
-FROM Users
-LEFT JOIN Reservations ON Users.id = Reservations.user_id
-GROUP BY Users.id, Users.name
+EXPLAIN ANALYZE SELECT users.id AS user_id, users.name, COUNT(reservations.id) AS total_bookings
+FROM users
+LEFT JOIN reservations ON users.id = reservations.user_id
+GROUP BY users.id, users.name
 ORDER BY total_bookings DESC;
 
 -- 2. Rank properties based on the total number of bookings
-EXPLAIN ANALYZE SELECT Rooms.id AS room_id, Rooms.name, COUNT(Reservations.id) AS total_bookings,
-       RANK() OVER (ORDER BY COUNT(Reservations.id) DESC) AS booking_rank
-FROM Rooms
-LEFT JOIN Reservations ON Rooms.id = Reservations.room_id
-GROUP BY Rooms.id, Rooms.name
+EXPLAIN ANALYZE SELECT rooms.id AS room_id, rooms.title, COUNT(reservations.id) AS total_bookings,
+       RANK() OVER (ORDER BY COUNT(reservations.id) DESC) AS booking_rank
+FROM rooms
+LEFT JOIN reservations ON rooms.id = reservations.room_id
+GROUP BY rooms.id, rooms.title
 ORDER BY booking_rank;
 
 -- 3. Rank properties using ROW_NUMBER() based on the total number of bookings
 EXPLAIN ANALYZE WITH property_bookings AS (
-    SELECT Rooms.id AS room_id, Rooms.name, COUNT(Reservations.id) AS total_bookings
-    FROM Rooms
-    LEFT JOIN Reservations ON Rooms.id = Reservations.room_id
-    GROUP BY Rooms.id, Rooms.name
+    SELECT rooms.id AS room_id, rooms.title, COUNT(reservations.id) AS total_bookings
+    FROM rooms
+    LEFT JOIN reservations ON rooms.id = reservations.room_id
+    GROUP BY rooms.id, rooms.title
 )
-SELECT room_id, name, total_bookings,
+SELECT room_id, title, total_bookings,
        ROW_NUMBER() OVER (ORDER BY total_bookings DESC) AS booking_row_number
 FROM property_bookings
 ORDER BY booking_row_number;

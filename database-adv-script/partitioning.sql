@@ -28,7 +28,9 @@ CREATE TABLE reservations_partitioned_max PARTITION OF reservations_partitioned
 -- INSERT INTO reservations_partitioned SELECT * FROM reservations;
 
 -- Step 4: Example query to test performance
-EXPLAIN ANALYZE SELECT * FROM reservations_partitioned WHERE start_date BETWEEN '2024-01-01' AND '2024-12-31';
+EXPLAIN ANALYZE
+SELECT * FROM reservations_partitioned
+WHERE start_date BETWEEN '2024-01-01' AND '2024-12-31';
 
 -- Step 5: Compare with non-partitioned table
 EXPLAIN ANALYZE SELECT * FROM reservations WHERE start_date BETWEEN '2024-01-01' AND '2024-12-31';

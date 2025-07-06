@@ -12,3 +12,15 @@ FROM Rooms
 LEFT JOIN Reservations ON Rooms.id = Reservations.room_id
 GROUP BY Rooms.id, Rooms.name
 ORDER BY booking_rank;
+
+-- 3. Rank properties using ROW_NUMBER() based on the total number of bookings they have received
+WITH property_bookings AS (
+    SELECT Rooms.id AS room_id, Rooms.name, COUNT(Reservations.id) AS total_bookings
+    FROM Rooms
+    LEFT JOIN Reservations ON Rooms.id = Reservations.room_id
+    GROUP BY Rooms.id, Rooms.name
+)
+SELECT room_id, name, total_bookings,
+       ROW_NUMBER() OVER (ORDER BY total_bookings DESC) AS booking_row_number
+FROM property_bookings
+ORDER BY booking_row_number;

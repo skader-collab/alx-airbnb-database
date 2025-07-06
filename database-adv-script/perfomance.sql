@@ -6,7 +6,8 @@ SELECT r.id AS reservation_id, r.start_date, r.end_date, r.created_at AS reserva
 FROM reservations r
 JOIN users u ON r.user_id = u.id
 JOIN rooms rm ON r.room_id = rm.id
-LEFT JOIN payments p ON r.id = p.reservation_id;
+LEFT JOIN payments p ON r.id = p.reservation_id
+WHERE r.start_date >= '2024-01-01' AND p.status = 'completed';
 
 -- Analyze performance
 EXPLAIN SELECT r.id AS reservation_id, r.start_date, r.end_date, r.created_at AS reservation_created_at,
@@ -16,7 +17,8 @@ EXPLAIN SELECT r.id AS reservation_id, r.start_date, r.end_date, r.created_at AS
 FROM reservations r
 JOIN users u ON r.user_id = u.id
 JOIN rooms rm ON r.room_id = rm.id
-LEFT JOIN payments p ON r.id = p.reservation_id;
+LEFT JOIN payments p ON r.id = p.reservation_id
+WHERE r.start_date >= '2024-01-01' AND p.status = 'completed';
 
 -- Refactored query for performance (ensure indexes exist on join columns)
 CREATE INDEX IF NOT EXISTS idx_reservations_user_id ON reservations(user_id);
@@ -28,7 +30,8 @@ SELECT r.id AS reservation_id, r.start_date, r.end_date,
 FROM reservations r
 JOIN users u ON r.user_id = u.id
 JOIN rooms rm ON r.room_id = rm.id
-LEFT JOIN payments p ON r.id = p.reservation_id;
+LEFT JOIN payments p ON r.id = p.reservation_id
+WHERE r.start_date >= '2024-01-01' AND p.status = 'completed';
 
 -- Analyze refactored query
 EXPLAIN SELECT r.id AS reservation_id, r.start_date, r.end_date,
@@ -36,4 +39,5 @@ EXPLAIN SELECT r.id AS reservation_id, r.start_date, r.end_date,
 FROM reservations r
 JOIN users u ON r.user_id = u.id
 JOIN rooms rm ON r.room_id = rm.id
-LEFT JOIN payments p ON r.id = p.reservation_id;
+LEFT JOIN payments p ON r.id = p.reservation_id
+WHERE r.start_date >= '2024-01-01' AND p.status = 'completed';
